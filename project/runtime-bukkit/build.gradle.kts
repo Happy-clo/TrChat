@@ -15,7 +15,7 @@ dependencies {
     compileOnly("ink.ptms.core:v12001:12001:universal")
     compileOnly("net.md-5:bungeecord-api:1.20-R0.2-SNAPSHOT")
 
-    compileOnly("com.discordsrv:discordsrv:1.26.0")
+    compileOnly("com.discordsrv:discordsrv:1.26.2")
     compileOnly("me.clip:placeholderapi:2.11.3") { isTransitive = false }
     compileOnly("com.willfp:eco:6.65.4") { isTransitive = false }
     compileOnly("com.github.LoneDev6:api-itemsadder:3.5.0b") { isTransitive = false }
