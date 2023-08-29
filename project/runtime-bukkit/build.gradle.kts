@@ -19,7 +19,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.3") { isTransitive = false }
     compileOnly("com.willfp:eco:6.35.1") { isTransitive = false }
     compileOnly("com.github.LoneDev6:api-itemsadder:3.5.0b") { isTransitive = false }
-    compileOnly("xyz.xenondevs.nova:nova-api:0.12.13") { isTransitive = false }
+    compileOnly("xyz.xenondevs.nova:nova-api:0.14.10") { isTransitive = false }
 }
 
 taboolib {
