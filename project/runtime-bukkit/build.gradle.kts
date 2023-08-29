@@ -17,7 +17,7 @@ dependencies {
 
     compileOnly("com.discordsrv:discordsrv:1.26.0")
     compileOnly("me.clip:placeholderapi:2.11.3") { isTransitive = false }
-    compileOnly("com.willfp:eco:6.35.1") { isTransitive = false }
+    compileOnly("com.willfp:eco:6.65.4") { isTransitive = false }
     compileOnly("com.github.LoneDev6:api-itemsadder:3.5.0b") { isTransitive = false }
     compileOnly("xyz.xenondevs.nova:nova-api:0.12.13") { isTransitive = false }
 }
