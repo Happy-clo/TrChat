@@ -6,10 +6,6 @@ import taboolib.module.chat.ComponentText
 import taboolib.module.nms.nmsProxy
 import java.util.*
 
-/**
- * @author Arasple
- * @date 2019/11/30 11:17
- */
 abstract class NMS {
 
     /**

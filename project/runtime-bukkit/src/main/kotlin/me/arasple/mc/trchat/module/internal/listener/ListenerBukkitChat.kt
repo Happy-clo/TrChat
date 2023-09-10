@@ -14,6 +14,7 @@ import taboolib.common.platform.PlatformSide
 import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.util.Strings
+import taboolib.module.configuration.ConfigNode
 import taboolib.platform.util.sendLang
 
 /**
@@ -23,10 +24,17 @@ import taboolib.platform.util.sendLang
 @PlatformSide([Platform.BUKKIT])
 object ListenerBukkitChat {
 
+    @ConfigNode("Options.Always-Cancel-Chat-Event", "settings.yml")
+    var cancel = false
+        private set
+
     @SubscribeEvent(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onBukkitChat(e: AsyncPlayerChatEvent) {
         if (e.isCancelled) return
         e.recipients.clear()
+        if (cancel) {
+            e.isCancelled = true
+        }
         val player = e.player
         val session = player.session
 
@@ -40,14 +48,14 @@ object ListenerBukkitChat {
             channel.bindings.prefix?.forEach {
                 if (e.message.startsWith(it, ignoreCase = true)) {
                     if (channel.settings.isPrivate) e.isCancelled = true
-                    channel.execute(player, e.message.substring(it.length), TrChatBukkit.isPaperEnv)
+                    channel.execute(player, e.message.substring(it.length), TrChatBukkit.isPaperEnv || cancel)
                     return
                 }
             }
         }
         session.getChannel()?.let {
             if (it.settings.isPrivate) e.isCancelled = true
-            it.execute(player, e.message, TrChatBukkit.isPaperEnv)
+            it.execute(player, e.message, TrChatBukkit.isPaperEnv || cancel)
         }
     }
 

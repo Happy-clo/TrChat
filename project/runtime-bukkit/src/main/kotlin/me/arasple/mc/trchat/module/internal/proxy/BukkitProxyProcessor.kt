@@ -83,7 +83,9 @@ sealed interface BukkitProxyProcessor : PluginMessageListener {
                     onlinePlayers
                         .filter { perm == "" || it.hasPermission(perm) }
                         .forEach { it.sendComponent(uuid, message) }
-//                    console().sendComponent(uuid, message)
+                    if (this is RedisSide) {
+                        console().sendComponent(uuid, message)
+                    }
                 }
             }
             "UpdateAllNames" -> {

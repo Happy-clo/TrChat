@@ -3,7 +3,6 @@ package me.arasple.mc.trchat.api.nms
 import me.arasple.mc.trchat.util.reportOnce
 import net.minecraft.network.protocol.game.ClientboundCustomChatCompletionsPacket
 import net.minecraft.server.v1_12_R1.ChatMessageType
-import net.minecraft.server.v1_12_R1.IChatBaseComponent
 import net.minecraft.server.v1_12_R1.PacketPlayOutChat
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -15,17 +14,15 @@ import taboolib.module.nms.sendPacket
 import taboolib.platform.util.isNotAir
 import java.util.*
 
+private typealias IChatBaseComponent12 = net.minecraft.server.v1_12_R1.IChatBaseComponent
+private typealias ChatSerializer12 = net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer
+private typealias ChatSerializer16 = net.minecraft.server.v1_16_R1.IChatBaseComponent.ChatSerializer
 private typealias CraftPlayer19 = org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer
 private typealias CraftItemStack19 = org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack
 private typealias CraftChatMessage19 = org.bukkit.craftbukkit.v1_19_R2.util.CraftChatMessage
 private typealias NMSNBTTagCompound = net.minecraft.nbt.NBTTagCompound
 private typealias NMSIChatBaseComponent = net.minecraft.network.chat.IChatBaseComponent
-private typealias NMSChatSerializer = IChatBaseComponent.ChatSerializer
 
-/**
- * @author Arasple
- * @date 2019/11/30 11:16
- */
 @Suppress("unused")
 class NMSImpl : NMS() {
 
@@ -33,8 +30,10 @@ class NMSImpl : NMS() {
         return try {
             if (majorLegacy >= 11604) {
                 CraftChatMessage19.fromJSON(component.toRawMessage())
+            } else if (majorLegacy >= 11600) {
+                ChatSerializer16.a(component.toRawMessage())!!
             } else {
-                NMSChatSerializer.a(component.toRawMessage())!!
+                ChatSerializer12.a(component.toRawMessage())!!
             }
         } catch (t: Throwable) {
             throw IllegalStateException("Got an error translating component!Please report!", t)
@@ -46,7 +45,7 @@ class NMSImpl : NMS() {
             if (majorLegacy >= 11604) {
                 CraftChatMessage19.toJSON(component as NMSIChatBaseComponent)
             } else {
-                NMSChatSerializer.a(component as IChatBaseComponent)!!
+                ChatSerializer12.a(component as IChatBaseComponent12)!!
             }
         } catch (t: Throwable) {
             throw IllegalStateException("Got an error translating component!Please report!", t)

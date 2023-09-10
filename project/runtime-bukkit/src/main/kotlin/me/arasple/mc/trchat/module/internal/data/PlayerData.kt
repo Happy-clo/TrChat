@@ -36,7 +36,11 @@ class PlayerData(val player: OfflinePlayer) {
 
     val isVanishing get() = player.getDataContainer()["vanish"].cbool
 
-    val ignored get() = player.getDataContainer()["ignored"]?.split(",")?.map { it.toUUID() } ?: emptyList()
+    val ignored get() = player.getDataContainer()["ignored"]
+        ?.takeIf { it.isNotBlank() }
+        ?.split(",")
+        ?.map { it.toUUID() }
+        ?: emptyList()
 
     fun setChannel(channel: Channel) {
         player.getDataContainer()["channel"] = channel.id
@@ -71,19 +75,20 @@ class PlayerData(val player: OfflinePlayer) {
     }
 
     fun addIgnored(uuid: UUID) {
-        val list = player.getDataContainer()["ignored"]?.split(",") ?: listOf()
+        val list = player.getDataContainer()["ignored"]?.takeIf { it.isNotBlank() }?.split(",") ?: listOf()
         val new = list + uuid.parseString()
         player.getDataContainer()["ignored"] = new.joinToString(",")
     }
 
     fun removeIgnored(uuid: UUID) {
-        val list = player.getDataContainer()["ignored"]?.split(",") ?: return
+        val list = player.getDataContainer()["ignored"]?.takeIf { it.isNotBlank() }?.split(",") ?: return
         val new = list - uuid.parseString()
         player.getDataContainer()["ignored"] = new.joinToString(",")
     }
 
     fun hasIgnored(uuid: UUID): Boolean {
-        return uuid.parseString() in (player.getDataContainer()["ignored"]?.split(",") ?: return false)
+        val list = player.getDataContainer()["ignored"]?.takeIf { it.isNotBlank() }?.split(",") ?: return false
+        return uuid.parseString() in list
     }
 
     fun switchIgnored(uuid: UUID): Boolean {

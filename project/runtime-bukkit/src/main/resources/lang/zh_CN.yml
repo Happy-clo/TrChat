@@ -128,6 +128,10 @@ Function-Mention-All-Format:
   - type: json
     text: ' [&a@&2所有人] '
     args: [ ]
+Function-Item-Show-Format-New:
+  - type: json
+    text: '&8\[[item] &bx{0}&8\]'
+    args: [ ]
 Function-Item-Show-Format-With-Hopper:
   - type: json
     text: '&8\[[item] &bx{0}&8\]'

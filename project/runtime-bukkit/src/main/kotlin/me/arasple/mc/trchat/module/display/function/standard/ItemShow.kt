@@ -59,11 +59,14 @@ object ItemShow : Function("ITEM") {
     @ConfigNode("General.Item-Show.Permission", "function.yml")
     var permission = "none"
 
+    @ConfigNode("General.Item-Show.Origin-Name", "function.yml")
+    var originName = false
+
     @ConfigNode("General.Item-Show.Compatible", "function.yml")
     var compatible = false
 
-    @ConfigNode("General.Item-Show.Origin-Name", "function.yml")
-    var originName = false
+    @ConfigNode("General.Item-Show.UI", "function.yml")
+    var ui = true
 
     @ConfigNode("General.Item-Show.Cooldown", "function.yml")
     val cooldown = ConfigNodeTransfer<String, Long> { parseMillis() }
@@ -107,26 +110,39 @@ object ItemShow : Function("ITEM") {
                 newItem
             }
         }
-        val sha1 = computeAndCache(sender, item).let {
-            BukkitProxyManager.sendMessage(sender, arrayOf(
-                "ItemShow",
-                MinecraftVersion.minecraftVersion,
-                sender.name,
-                it.first,
-                it.second)
-            )
-            it.first
-        }
+
         return cacheComponent.get(newItem) {
-            sender
-                .getComponentFromLang("Function-Item-Show-Format-With-Hopper", newItem.amount, sha1) { type, i, part, proxySender ->
-                    val component = if (part.isVariable && part.text == "item") {
-                        newItem.getNameComponent(sender)
-                    } else {
-                        Components.text(part.text.translate(proxySender).replaceWithOrder(newItem.amount, sha1))
-                    }
-                    component.applyStyle(type, part, i, proxySender, newItem.amount, sha1).hoverItemFixed(newItem)
+            if (ui) {
+                val sha1 = computeAndCache(sender, item).let {
+                    BukkitProxyManager.sendMessage(sender, arrayOf(
+                        "ItemShow",
+                        MinecraftVersion.minecraftVersion,
+                        sender.name,
+                        it.first,
+                        it.second)
+                    )
+                    it.first
                 }
+                sender
+                    .getComponentFromLang("Function-Item-Show-Format-With-Hopper", newItem.amount, sha1) { type, i, part, proxySender ->
+                        val component = if (part.isVariable && part.text == "item") {
+                            newItem.getNameComponent(sender)
+                        } else {
+                            Components.text(part.text.translate(proxySender).replaceWithOrder(newItem.amount, sha1))
+                        }
+                        component.applyStyle(type, part, i, proxySender, newItem.amount, sha1).hoverItemFixed(newItem)
+                    }
+            } else {
+                sender
+                    .getComponentFromLang("Function-Item-Show-Format-New", newItem.amount) { type, i, part, proxySender ->
+                        val component = if (part.isVariable && part.text == "item") {
+                            item.getNameComponent(sender)
+                        } else {
+                            Components.text(part.text.translate(proxySender).replaceWithOrder(newItem.amount))
+                        }
+                        component.applyStyle(type, part, i, proxySender, newItem.amount).hoverItemFixed(newItem)
+                    }
+            }
         }
     }
 

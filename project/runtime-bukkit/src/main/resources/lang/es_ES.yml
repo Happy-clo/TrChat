@@ -114,6 +114,10 @@ Function-Mention-Notify:
     sound: 'BLOCK_ANVIL_LAND'
     volume: 1
     pitch: 2
+Function-Item-Show-Format-New:
+  - type: json
+    text: '&8\[[item] &bx{0}&8\]'
+    args: [ ]
 Function-Item-Show-Format-With-Hopper:
   - type: json
     text: '&8\[[item] &bx{0}&8\]'

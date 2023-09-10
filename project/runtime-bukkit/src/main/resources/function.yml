@@ -31,6 +31,7 @@ General:
     Cooldown: '30s'
     Origin-Name: false
     Compatible: false
+    UI: true
     Keys:
       - "%i%"
       - "%i"

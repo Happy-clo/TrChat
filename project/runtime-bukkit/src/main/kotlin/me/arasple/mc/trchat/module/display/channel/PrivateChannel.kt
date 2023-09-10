@@ -98,6 +98,7 @@ class PrivateChannel(
             return null
         }
         val session = player.session
+        val to = session.lastPrivateTo
         session.lastChannel = this
         session.lastPrivateMessage = message
         val event = TrChatEvent(this, session, message)
@@ -107,11 +108,13 @@ class PrivateChannel(
         val msg = events.process(player, event.message)?.replace("{{", "\\{{") ?: return null
 
         val send = Components.empty()
+        var msgComponent: ComponentText? = null
         sender.firstOrNull { it.condition.pass(player) }?.let { format ->
             format.prefix
                 .mapNotNull { prefix -> prefix.value.firstOrNull { it.condition.pass(player) }?.content?.toTextComponent(player) }
                 .forEach { prefix -> send.append(prefix) }
-            send.append(format.msg.createComponent(player, msg, settings.disabledFunctions))
+            msgComponent = format.msg.createComponent(player, msg, settings.disabledFunctions)
+            send.append(msgComponent!!)
             format.suffix
                 .mapNotNull { suffix -> suffix.value.firstOrNull { it.condition.pass(player) }?.content?.toTextComponent(player) }
                 .forEach { suffix -> send.append(suffix) }
@@ -133,35 +136,35 @@ class PrivateChannel(
             return null
         }
         // Channel event
-        if (!events.send(player, session.lastPrivateTo, msg)) {
+        if (!events.send(player, to, msg)) {
             return null
         }
         player.sendComponent(player, send)
 
         PlayerData.data.filterValues { it.isSpying }.entries.forEach { (_, v) ->
-            v.player.player?.sendLang("Private-Message-Spy-Format", player.name, session.lastPrivateTo, msg)
+            v.player.player
+                ?.sendLang("Private-Message-Spy-Format", player.name, to, msgComponent!!.toLegacyText())
         }
-        console().sendLang("Private-Message-Spy-Format", player.name, session.lastPrivateTo, msg)
+        console().sendLang("Private-Message-Spy-Format", player.name, to, msgComponent!!.toLegacyText())
 
-        CommandReply.lastMessageFrom[session.lastPrivateTo] = player.name
-        ChatLogs.logPrivate(player.name, session.lastPrivateTo, message)
+        CommandReply.lastMessageFrom[to] = player.name
+        ChatLogs.logPrivate(player.name, to, message)
         Metrics.increase(0)
 
         if (settings.proxy && BukkitProxyManager.processor != null) {
             BukkitProxyManager.sendRaw(
                 player,
-                session.lastPrivateTo,
+                to,
                 receive,
                 settings.doubleTransfer
             )
-            BukkitProxyManager.sendProxyLang(player, session.lastPrivateTo, "Private-Message-Receive", player.name)
+            BukkitProxyManager.sendProxyLang(player, to, "Private-Message-Receive", player.name)
         } else {
-            getProxyPlayer(session.lastPrivateTo)?.let {
+            getProxyPlayer(to)?.let {
                 it.sendComponent(player, receive)
                 it.sendLang("Private-Message-Receive", player.name)
             }
         }
-
         return send to receive
     }
 }
