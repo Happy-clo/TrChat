@@ -44,7 +44,7 @@ object ListenerAnvilChange {
                 return@modifyMeta
             }
             if (filter) {
-                setDisplayName(TrChat.api().getFilterManager().filter(displayName, player = adaptPlayer(p)).filtered)
+                setDisplayName(TrChat.api().getFilterManager().filter(displayName, adaptPlayer(p)).filtered)
             }
             if (color) {
                 if (p.hasPermission("trchat.color.simple")) {

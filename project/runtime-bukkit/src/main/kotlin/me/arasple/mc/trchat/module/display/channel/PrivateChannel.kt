@@ -15,10 +15,12 @@ import me.arasple.mc.trchat.util.checkMute
 import me.arasple.mc.trchat.util.pass
 import me.arasple.mc.trchat.util.sendComponent
 import me.arasple.mc.trchat.util.session
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import taboolib.common.platform.command.PermissionDefault
 import taboolib.common.platform.command.command
 import taboolib.common.platform.command.suggest
+import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.console
 import taboolib.common.platform.function.getProxyPlayer
 import taboolib.common.util.subList
@@ -93,7 +95,7 @@ class PrivateChannel(
             player.sendLang("Channel-No-Speak-Permission")
             return null
         }
-        if (settings.filterBeforeSending && TrChat.api().getFilterManager().filter(message).sensitiveWords > 0) {
+        if (settings.filterBeforeSending && TrChat.api().getFilterManager().filter(message, adaptPlayer(player)).sensitiveWords > 0) {
             player.sendLang("Channel-Bad-Language")
             return null
         }
@@ -141,8 +143,8 @@ class PrivateChannel(
         }
         player.sendComponent(player, send)
 
-        PlayerData.data.filterValues { it.isSpying }.entries.forEach { (_, v) ->
-            v.player.player
+        PlayerData.spying.forEach {
+            Bukkit.getPlayer(it)
                 ?.sendLang("Private-Message-Spy-Format", player.name, to, msgComponent!!.toLegacyText())
         }
         console().sendLang("Private-Message-Spy-Format", player.name, to, msgComponent!!.toLegacyText())

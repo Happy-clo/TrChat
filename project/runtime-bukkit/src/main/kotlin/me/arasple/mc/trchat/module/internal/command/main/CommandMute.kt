@@ -39,37 +39,35 @@ object CommandMute {
                     BukkitProxyManager.getPlayerNames().keys.toList()
                 }
                 execute<CommandSender> { sender, ctx, _ ->
-                    val player = Bukkit.getOfflinePlayer(ctx["player"])
-                    if (!player.hasPlayedBefore()) {
-                        return@execute sender.sendLang("Command-Player-Not-Exist")
-                    }
+                    val player = Bukkit.getPlayer(ctx["player"])
+                        ?: return@execute sender.sendLang("Command-Player-Not-Exist")
                     val data = player.data
                     data.updateMuteTime("999d".parseMillis())
-                    sender.sendLang("Mute-Muted-Player", player.name!!, "999d", "null")
-                    (player as? Player)?.sendLang("General-Muted", muteDateFormat.format(data.muteTime), data.muteReason)
+                    sender.sendLang("Mute-Muted-Player", player.name, "999d", "null")
+                    (player as? Player)
+                        ?.sendLang("General-Muted", muteDateFormat.format(data.muteTime), data.muteReason)
                 }
                 dynamic("options", optional = true) {
                     suggestUncheck {
                         listOf("-t 1h", "-t 2d", "-t 15m", "-r Reason", "--cancel")
                     }
                     execute<CommandSender> { sender, ctx, argument ->
-                        val player = Bukkit.getOfflinePlayer(ctx["player"])
-                        if (!player.hasPlayedBefore()) {
-                            return@execute sender.sendLang("Command-Player-Not-Exist")
-                        }
+                        val player = Bukkit.getPlayer(ctx["player"])
+                            ?: return@execute sender.sendLang("Command-Player-Not-Exist")
                         val data = player.data
                         val de = Demand("mute $argument")
                         if (de.tags.contains("cancel")) {
                             data.updateMuteTime(0)
-                            sender.sendLang("Mute-Cancel-Muted-Player", player.name!!)
+                            sender.sendLang("Mute-Cancel-Muted-Player", player.name)
                             (player as? Player)?.sendLang("General-Cancel-Muted")
                         } else {
                             val time = de.get("t") ?: "999d"
                             val reason = de.get("r") ?: "null"
                             data.updateMuteTime(time.parseMillis())
                             data.setMuteReason(reason)
-                            sender.sendLang("Mute-Muted-Player", player.name!!, time, reason)
-                            (player as? Player)?.sendLang("General-Muted", muteDateFormat.format(data.muteTime), data.muteReason)
+                            sender.sendLang("Mute-Muted-Player", player.name, time, reason)
+                            (player as? Player)
+                                ?.sendLang("General-Muted", muteDateFormat.format(data.muteTime), data.muteReason)
                         }
                     }
                 }
@@ -84,12 +82,10 @@ object CommandMute {
                     BukkitProxyManager.getPlayerNames().keys.toList()
                 }
                 execute<CommandSender> { sender, ctx, _ ->
-                    val player = Bukkit.getOfflinePlayer(ctx["player"])
-                    if (!player.hasPlayedBefore()) {
-                        return@execute sender.sendLang("Command-Player-Not-Exist")
-                    }
+                    val player = Bukkit.getPlayer(ctx["player"])
+                        ?: return@execute sender.sendLang("Command-Player-Not-Exist")
                     player.data.updateMuteTime(0)
-                    sender.sendLang("Mute-Cancel-Muted-Player", player.name!!)
+                    sender.sendLang("Mute-Cancel-Muted-Player", player.name)
                     (player as? Player)?.sendLang("General-Cancel-Muted")
                 }
             }

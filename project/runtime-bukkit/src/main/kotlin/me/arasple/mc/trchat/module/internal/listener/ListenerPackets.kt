@@ -1,6 +1,6 @@
 package me.arasple.mc.trchat.module.internal.listener
 
-import me.arasple.mc.trchat.util.session
+import me.arasple.mc.trchat.module.display.ChatSession
 import taboolib.common.platform.Platform
 import taboolib.common.platform.PlatformSide
 import taboolib.common.platform.event.SubscribeEvent
@@ -32,7 +32,7 @@ object ListenerPackets {
      */
     @SubscribeEvent
     fun recall(e: PacketSendEvent) {
-        val session = e.player.session
+        val session = ChatSession.sessions[e.player.uniqueId] ?: return
         when (e.packet.name) {
             "ClientboundSystemChatPacket" -> {
                 session.addMessage(e.packet)

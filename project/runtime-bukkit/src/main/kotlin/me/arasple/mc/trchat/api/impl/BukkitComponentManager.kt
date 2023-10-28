@@ -76,8 +76,9 @@ object BukkitComponentManager : ComponentManager {
 
     override fun validateComponent(component: ComponentText, maxLength: Int): ComponentText {
         if (maxLength <= 0) return component
-        return if (component.toRawMessage().length > maxLength) {
-            Components.text("This chat component is too big to show ( > $maxLength ).")
+        val length = component.toRawMessage().length
+        return if (length > maxLength) {
+            Components.text("This chat component is too big to show ($length > $maxLength).")
         } else {
             component
         }

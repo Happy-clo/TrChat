@@ -13,7 +13,6 @@ import taboolib.common.platform.event.EventPriority
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common.platform.function.adaptPlayer
 import taboolib.common.platform.function.submit
-import taboolib.expansion.playerDataContainer
 import taboolib.expansion.setupDataContainer
 
 /**
@@ -29,9 +28,7 @@ object ListenerJoin {
     fun onJoin(e: PlayerJoinEvent) {
         val player = e.player
 
-        if (!playerDataContainer.containsKey(player.uniqueId)) {
-            player.setupDataContainer()
-        }
+        player.setupDataContainer()
         player.data
         player.session
 

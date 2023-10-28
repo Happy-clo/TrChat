@@ -35,7 +35,7 @@ object ListenerSignChange {
 
         for (index in e.lines.indices) {
             if (filter) {
-                e.setLine(index, TrChat.api().getFilterManager().filter(e.getLine(index) ?: "", player = adaptPlayer(p)).filtered)
+                e.setLine(index, TrChat.api().getFilterManager().filter(e.getLine(index) ?: "", adaptPlayer(p)).filtered)
             }
             if (color) {
                 if (TrChatBukkit.isPaperEnv && p.hasPermission("trchat.color.simple")) {

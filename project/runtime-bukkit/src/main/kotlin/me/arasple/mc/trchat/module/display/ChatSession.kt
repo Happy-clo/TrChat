@@ -7,9 +7,9 @@ import me.arasple.mc.trchat.module.display.channel.PrivateChannel
 import me.arasple.mc.trchat.util.color.CustomColor
 import me.arasple.mc.trchat.util.color.MessageColors
 import me.arasple.mc.trchat.util.data
-import me.arasple.mc.trchat.util.getDataContainer
 import me.arasple.mc.trchat.util.reportOnce
 import org.bukkit.entity.Player
+import taboolib.expansion.getDataContainer
 import taboolib.module.nms.Packet
 import taboolib.module.nms.sendPacket
 import java.util.*

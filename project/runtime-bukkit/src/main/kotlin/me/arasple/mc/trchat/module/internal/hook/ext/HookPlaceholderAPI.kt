@@ -2,11 +2,10 @@ package me.arasple.mc.trchat.module.internal.hook.ext
 
 import me.arasple.mc.trchat.api.event.TrChatEvent
 import me.arasple.mc.trchat.module.internal.command.main.CommandMute
-import me.arasple.mc.trchat.util.Vars
+import me.arasple.mc.trchat.util.PAPIUtil
 import me.arasple.mc.trchat.util.data
 import me.arasple.mc.trchat.util.session
 import org.bukkit.Bukkit
-import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import taboolib.common.platform.Platform
 import taboolib.common.platform.PlatformSide
@@ -58,27 +57,9 @@ object HookPlaceholderAPI : PlaceholderExpansion {
         return "ERROR"
     }
 
-    override fun onPlaceholderRequest(player: OfflinePlayer?, args: String): String {
-        if (player != null) {
-            if (player.isOnline) {
-                return onPlaceholderRequest(player.player, args)
-            }
-            val params = args.split('_')
-            val data = player.data
-            return when (params[0].lowercase()) {
-                "spy" -> data.isSpying
-                "filter" -> data.isFilterEnabled
-                "mute" -> data.isMuted
-                "vanish" -> data.isVanishing
-                else -> "out of case"
-            }.toString()
-        }
-        return "ERROR"
-    }
-
     @SubscribeEvent(priority = EventPriority.LOW)
     fun onChat(e: TrChatEvent) {
-        if (e.forward && !Vars.checkExpansions(e.session.player)) {
+        if (e.forward && !PAPIUtil.checkExpansions(e.session.player)) {
             e.isCancelled = true
         }
     }

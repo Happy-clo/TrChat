@@ -14,7 +14,7 @@ import taboolib.platform.util.sendLang
  * @date 2019/11/29 21:29
  */
 @PlatformSide([Platform.BUKKIT])
-object Vars {
+object PAPIUtil {
 
     @ConfigNode("Options.Depend-Expansions", "settings.yml")
     var depends = emptyList<String>()

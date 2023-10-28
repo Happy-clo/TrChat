@@ -2,6 +2,7 @@ package me.arasple.mc.trchat.module.internal.listener
 
 import me.arasple.mc.trchat.module.display.ChatSession
 import me.arasple.mc.trchat.module.display.channel.Channel
+import me.arasple.mc.trchat.module.internal.data.PlayerData
 import org.bukkit.event.player.PlayerQuitEvent
 import taboolib.common.platform.Platform
 import taboolib.common.platform.PlatformSide
@@ -21,6 +22,7 @@ object ListenerQuit {
         val player = e.player
         Channel.channels.values.forEach { it.listeners -= player.name }
         ChatSession.removeSession(player)
+        PlayerData.removeData(player)
         player.releaseDataContainer()
     }
 

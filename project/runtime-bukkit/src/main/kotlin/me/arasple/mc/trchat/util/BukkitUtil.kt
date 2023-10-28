@@ -14,9 +14,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 import taboolib.common.util.unsafeLazy
-import taboolib.expansion.DataContainer
-import taboolib.expansion.playerDataContainer
-import taboolib.expansion.playerDatabase
 import taboolib.module.chat.ComponentText
 import taboolib.module.nms.MinecraftVersion
 import taboolib.module.ui.MenuHolder
@@ -79,7 +76,7 @@ fun String.parseInline(sender: CommandSender, vars: Map<String, Any> = emptyMap(
 
 inline val Player.session get() = ChatSession.getSession(this)
 
-inline val OfflinePlayer.data get() = PlayerData.getData(this)
+inline val Player.data get() = PlayerData.getData(this)
 
 fun Player.checkMute(): Boolean {
     if (TrChatBukkit.isGlobalMuting && !hasPermission("trchat.bypass.globalmute")) {
@@ -92,10 +89,6 @@ fun Player.checkMute(): Boolean {
         return false
     }
     return true
-}
-
-fun OfflinePlayer.getDataContainer(): DataContainer {
-    return playerDataContainer.computeIfAbsent(uniqueId) { DataContainer(uniqueId.parseString(), playerDatabase!!) }
 }
 
 fun Any.sendComponent(sender: Any?, component: ComponentText) {

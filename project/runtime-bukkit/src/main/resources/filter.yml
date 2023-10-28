@@ -9,10 +9,10 @@ Cloud-Thesaurus:
   Urls:
     - 'https://raw.githubusercontent.com/Yurinann/Filter-Thesaurus-Cloud/main/database.json' # 感谢南城提供的词库
 
-Local:
-  - 'NMSL'
-  - 'fuck'
-  - 'shit'
+Local: |-
+  NMSL
+  fuck
+  shit
 
 Ignored-Punctuations: ['!','.',',','#','$','%','&','*','(',')','|','?','/','@','"','\',';','[',']','{','}','+','~','-','_','=','^','<','>',' ','　','！','。','，','￥','（','）','？','、','“','‘','；','【','】','——','……','《','》','\\', '`']
 WhiteList: ['has been']

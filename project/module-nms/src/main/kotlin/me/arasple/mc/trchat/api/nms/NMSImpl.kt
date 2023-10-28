@@ -11,16 +11,18 @@ import taboolib.module.chat.ComponentText
 import taboolib.module.nms.MinecraftVersion.isUniversal
 import taboolib.module.nms.MinecraftVersion.majorLegacy
 import taboolib.module.nms.sendPacket
-import taboolib.platform.util.isNotAir
+import taboolib.platform.util.isAir
 import java.util.*
 
 private typealias IChatBaseComponent12 = net.minecraft.server.v1_12_R1.IChatBaseComponent
 private typealias ChatSerializer12 = net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer
 private typealias ChatSerializer16 = net.minecraft.server.v1_16_R1.IChatBaseComponent.ChatSerializer
-private typealias CraftPlayer19 = org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer
+private typealias CraftPlayer19 = org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer
+private typealias CraftItemStack12 = org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack
 private typealias CraftItemStack19 = org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack
 private typealias CraftChatMessage19 = org.bukkit.craftbukkit.v1_19_R2.util.CraftChatMessage
-private typealias NMSNBTTagCompound = net.minecraft.nbt.NBTTagCompound
+private typealias NBTTagCompound12 = net.minecraft.server.v1_12_R1.NBTTagCompound
+private typealias NBTTagCompound19 = net.minecraft.nbt.NBTTagCompound
 private typealias NMSIChatBaseComponent = net.minecraft.network.chat.IChatBaseComponent
 
 @Suppress("unused")
@@ -77,7 +79,7 @@ class NMSImpl : NMS() {
 
     override fun hoverItem(component: ComponentText, itemStack: ItemStack): ComponentText {
         val nmsItem = CraftItemStack19.asNMSCopy(itemStack)
-        val nbtTag = NMSNBTTagCompound()
+        val nbtTag = NBTTagCompound19()
         nmsItem.save(nbtTag)
         val id = nbtTag.getString("id") ?: "minecraft:air"
         val nbt = nbtTag.get("tag")?.toString() ?: "{}"
@@ -85,20 +87,34 @@ class NMSImpl : NMS() {
     }
 
     override fun optimizeNBT(itemStack: ItemStack, nbtWhitelist: Array<String>): ItemStack {
+        if (itemStack.isAir()) return itemStack
         try {
-            val nmsItem = CraftItemStack19.asNMSCopy(itemStack)
-            if (itemStack.isNotAir() && nmsItem.hasTag()) {
-                if (isUniversal) {
-                    val nbtTag = NMSNBTTagCompound()
-                    nmsItem.tag!!.allKeys.forEach {
-                        if (it in nbtWhitelist) {
-                            nbtTag.put(it, nmsItem.tag!!.get(it))
+            if (isUniversal) {
+                val nmsItem = CraftItemStack19.asNMSCopy(itemStack)
+                if (nmsItem.hasTag()) {
+                    val nbtTag = NBTTagCompound19()
+                    nmsItem.tag!!.allKeys.forEach { key ->
+                        if (key in nbtWhitelist) {
+                            nbtTag.put(key, nmsItem.tag!!.get(key))
                         }
                     }
                     nmsItem.tag = nbtTag
                     return CraftItemStack19.asBukkitCopy(nmsItem)
                 }
+            } else {
+                val nmsItem = CraftItemStack12.asNMSCopy(itemStack)
+                if (nmsItem.hasTag()) {
+                    val nbtTag = NBTTagCompound12()
+                    nmsItem.tag!!.c().forEach { key ->
+                        if (key in nbtWhitelist) {
+                            nbtTag.set(key, nmsItem.tag!!.get(key))
+                        }
+                    }
+                    nmsItem.tag = nbtTag
+                    return CraftItemStack12.asBukkitCopy(nmsItem)
+                }
             }
+
         } catch (t: Throwable) {
             t.reportOnce("Got an error optimizing item nbt")
         }

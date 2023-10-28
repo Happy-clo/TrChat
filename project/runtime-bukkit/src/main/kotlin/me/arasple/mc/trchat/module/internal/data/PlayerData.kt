@@ -1,12 +1,12 @@
 package me.arasple.mc.trchat.module.internal.data
 
 import me.arasple.mc.trchat.module.display.channel.Channel
-import me.arasple.mc.trchat.util.getDataContainer
 import me.arasple.mc.trchat.util.parseString
 import me.arasple.mc.trchat.util.toUUID
-import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 import taboolib.common5.cbool
 import taboolib.common5.clong
+import taboolib.expansion.getDataContainer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -14,12 +14,11 @@ import java.util.concurrent.ConcurrentHashMap
  * @author ItsFlicker
  * @since 2022/6/25 18:17
  */
-class PlayerData(val player: OfflinePlayer) {
+class PlayerData(val player: Player) {
 
     init {
-        if (isVanishing) {
-            vanishing += player.name!!
-        }
+        if (isVanishing) vanishing += player.name
+        if (isSpying) spying += player.name
     }
 
     val channel get() = player.getDataContainer()["channel"]
@@ -64,13 +63,15 @@ class PlayerData(val player: OfflinePlayer) {
 
     fun switchSpy(): Boolean {
         player.getDataContainer()["spying"] = !isSpying
-        return isSpying
+        return isSpying.also {
+            if (it) spying += player.name else spying -= player.name
+        }
     }
 
     fun switchVanish(): Boolean {
         player.getDataContainer()["vanish"] = !isVanishing
         return isVanishing.also {
-            if (it) vanishing += player.name!! else vanishing -= player.name!!
+            if (it) vanishing += player.name else vanishing -= player.name
         }
     }
 
@@ -106,12 +107,17 @@ class PlayerData(val player: OfflinePlayer) {
         @JvmField
         val data = ConcurrentHashMap<UUID, PlayerData>()
 
+        val spying = mutableSetOf<String>()
         val vanishing = mutableSetOf<String>()
 
-        fun getData(player: OfflinePlayer): PlayerData {
+        fun getData(player: Player): PlayerData {
             return data.computeIfAbsent(player.uniqueId) {
                 PlayerData(player)
             }
+        }
+
+        fun removeData(player: Player) {
+            data -= player.uniqueId
         }
 
     }
