@@ -39,7 +39,7 @@ subprojects {
         compileOnly(fileTree("${rootDir.resolve("libs")}"))
         compileOnly("com.google.code.gson:gson:2.8.5")
         compileOnly("com.google.guava:guava:21.0")
-        compileOnly("net.kyori:adventure-api:4.14.0")
+        compileOnly("net.kyori:adventure-api:4.15.0")
         implementation("com.eatthepath:fast-uuid:0.2.0")
 
         compileOnly("io.izzel.taboolib:common:$taboolib_version")
